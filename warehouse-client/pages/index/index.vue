@@ -1,8 +1,13 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
+	<view>
+		<view class="status_bar">
+			<!-- 这里是状态栏 -->
+		</view>
+		<view class="userInfo">
+			<u-avatar :src="src" mode="square"></u-avatar>
+		</view>
+		<view class="list">
+
 		</view>
 	</view>
 </template>
@@ -11,10 +16,10 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				src: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg'
 			}
 		},
-		onLoad() {
+		onLoad() { 
 
 		},
 		methods: {
@@ -23,30 +28,10 @@
 	}
 </script>
 
-<style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+<style lang="scss">
+	.status_bar {
+		height: var(--status-bar-height);
+		width: 100%;
+		background-color: green;
 	}
 </style>
