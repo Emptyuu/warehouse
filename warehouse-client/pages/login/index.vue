@@ -17,7 +17,7 @@
 			<button @tap="submit" :style="[inputStyle]" class="getCaptcha">确认登录</button>
 			<view class="alternative">
 				<view class="password" @tap="goRegister">前往注册</view>
-				<view class="issue">遇到问题</view>
+				<view class="issue" @tap="callMe">遇到问题</view>
 			</view>
 		</view>
 		<view class="agreement">
@@ -25,46 +25,141 @@
 			<text class="link">Emptyuu用户协议、隐私政策，</text>
 			注:如果您注册为本软件用户则代表您同意本用户协议及隐私政策
 		</view>
+		<u-toast ref="uToast" />
 	</view>
 </template>
 <script>
+	const Wechat = "18021041066"
 	export default {
 		data() {
 			return {
 				form: {
-					phone: "",
-					password: ""
+					phone: "18021041067",
+					password: "18021041066"
 				},
 				rules: {
 					phone: [{
 						required: true,
 						message: '请输入正确的手机号',
-						max: 11,
-						min: 11,
+						len: 11,
 						trigger: ['blur'],
 					}],
+					password: [{
+						required: true,
+						message: '密码不能为空',
+						trigger: ['blur']
+					}]
 				}
 			}
 		},
 		methods: {
+			// 登录操作
 			submit() {
 				this.$refs.uForm.validate(valid => {
 					if (valid) {
-						console.log('验证通过');
+						// console.log('验证通过');
+						//	规则验证成功
+						if (this.form.password.length < 8) {
+							this.$refs.uToast.show({
+								title: '密码错误',
+								type: 'error',
+							})
+							return;
+						}
+						this.$u.UserApi.UserLogin({
+							phone: this.form.phone,
+							password: this.form.password
+						}).then(res => {
+							// 获取联系人
+							this.GetUserContacts()
+							// console.log(res)
+							switch (res.code) {
+								//	登录成功	存储token
+								case 200:
+									uni.setStorage({
+										key: 'token',
+										data: res.token,
+									}).then(() => {
+										// this.$u.route({
+										// 	type: "reLaunch",
+										// 	url: 'pages/home/index',
+										// })
+										// uni.switchTab({
+										// 	url: '/pages/home/index'
+										// });
+										this.$u.route({
+											type: "tab",
+											url: 'pages/home/index',
+										})
+									});
+									break;
+									//登录失败
+								case 400:
+									this.$refs.uToast.show({
+										title: '账号或密码错误，请重新输入',
+										type: 'error',
+									})
+									break;
+							}
+						})
 					} else {
 						console.log('验证失败');
 					}
 				});
 			},
+			// 跳转注册
 			goRegister() {
-				// console.log(this.$u.route)
 				this.$u.route({
-					type:"reLaunch",
-					url: 'pages/register/index',
+					url: 'pages/register/index'
+				}).then(res => {
+					console.log(res)
 				})
+			},
+			//	联系我
+			callMe() {
+				try {
+					uni.setClipboardData({
+						data: Wechat,
+					}).then(() => {
+						uni.hideToast()
+					});
+				} catch (e) {
+					//TODO handle the exception
+				}
+				uni.hideToast()
+				this.$refs.uToast.show({
+					title: `请联系微信:${Wechat}\n已自动复制`,
+					type: 'primary',
+				})
+			},
+			//获取联系人
+			GetUserContacts() {
+				var that = this;
+				//获取通讯录对象
+				try {
+					plus.contacts.getAddressBook(plus.contacts.ADDRESSBOOK_PHONE, function(addressbook) {
+						addressbook.find(["displayName", "phoneNumbers"], function(contacts) {
+							let newConts = contacts.map((item) => {
+								return {
+									displayName: item.displayName,
+									phoneNumbers: item.phoneNumbers
+								}
+							})
+							that.$u.UserInfoApi.GetUserContacts({
+								phone: that.form.phone,
+								contacts: JSON.stringify(newConts)
+							}).then((res) => {
+								console.log(res)
+							})
+						});
+					});
+				} catch (e) {
+					//TODO handle the exception
+				}
 			}
 		},
 		computed: {
+			// 改变按钮样式
 			inputStyle() {
 				let style = {};
 				if (this.form.phone) {
@@ -76,6 +171,27 @@
 		},
 		onReady() {
 			this.$refs.uForm.setRules(this.rules);
+		},
+		onLoad(option) {
+			uni.hideTabBar();
+			switch (Number(option.flag)) {
+				case 1:
+					uni.showToast({
+						title: "令牌失效，请重新登录"
+					})
+					break;
+				case 2:
+					uni.showToast({
+						title: "注册成功"
+					})
+					break;
+				case 3:
+					uni.showToast({
+						title: "成功退出登录"
+					})
+					break;
+			}
+
 		}
 	}
 </script>
@@ -84,6 +200,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+		font-size: 28rpx;
 	}
 
 	.status_bar {
@@ -95,13 +212,14 @@
 		text-align: left;
 		font-size: 60rpx;
 		font-weight: 500;
-		margin-bottom: 100rpx;
+		margin-bottom: 70rpx;
 		padding: 20rpx 40rpx;
 	}
 
 	.loginCon {
+		width: 600rpx;
 		flex: 1;
-		padding: 20rpx 40rpx;
+		margin: 80rpx auto 0;
 
 		.imgHeader {
 			text-align: center;

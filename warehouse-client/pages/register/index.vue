@@ -1,8 +1,8 @@
 <template>
 	<view class="wrap">
-		<view class="top"></view>
+		<view class="status_bar"></view>
+		<view class="title">欢迎注册Emptyu</view>
 		<view class="content">
-			<view class="title">欢迎注册Emptyu</view>
 			<u-form :model="form" ref="uForm" label-width="130">
 				<u-form-item label="手机号" prop="phone">
 					<u-input v-model="form.phone" />
@@ -24,26 +24,10 @@
 				<view class="issue">遇到问题</view>
 			</view>
 		</view>
-		<view class="buttom">
-			<view class="loginType">
-				<view class="wechat item">
-					<view class="icon">
-						<u-icon size="70" name="weixin-fill" color="rgb(83,194,64)"></u-icon>
-					</view>
-					微信
-				</view>
-				<view class="QQ item">
-					<view class="icon">
-						<u-icon size="70" name="qq-fill" color="rgb(17,183,233)"></u-icon>
-					</view>
-					QQ
-				</view>
-			</view>
-			<view class="hint">
-				注册代表同意
-				<text class="link">Emptyuu用户协议、隐私政策，</text>
-				注:如果您注册为本软件用户则代表您同意本用户协议及隐私政策
-			</view>
+		<view class="agreement">
+			注册代表同意
+			<text class="link">Emptyuu用户协议、隐私政策，</text>
+			注:如果您注册为本软件用户则代表您同意本用户协议及隐私政策
 		</view>
 	</view>
 </template>
@@ -60,11 +44,15 @@
 				},
 				rules: {
 					phone: [{
-						required: true,
 						min: 11,
 						max: 11,
-						message: '请输入手机号',
-						trigger: ['change', 'blur'],
+						type: "number",
+						message: '请输入正确手机号',
+						trigger: ['blur'],
+					}, {
+						required: true,
+						message: '手机号不可为空',
+						trigger: ['change', 'blur']
 					}],
 					password: [{
 						required: true,
@@ -115,15 +103,14 @@
 				this.$refs.uForm.validate(valid => {
 					if (valid) {
 						console.log('验证通过');
-						// this.$u.post('http://192.168.124.5:3000').then(res=>{
-						// 	console.log(res)
-						// })
-						this.$u.post('/users/register', {
+						this.$u.UserApi.Userregister({
 							username: this.form.username,
 							phone: this.form.phone,
 							password: this.form.password
 						}).then(res => {
-							console.log(res)
+							if (res.code == 200) {
+								this.goLogin()
+							}
 						}).catch(res => {
 							console.log(res)
 						})
@@ -135,8 +122,11 @@
 			goLogin() {
 				// console.log(this.$u.route)
 				this.$u.route({
-					// type:"reLaunch",
+					type: "navigateBack",
 					url: 'pages/login/index',
+					params: {
+						flag: 2
+					}
 				})
 			}
 
@@ -144,28 +134,37 @@
 		},
 		onReady() {
 			this.$refs.uForm.setRules(this.rules);
+		},
+		onLoad() {
+			uni.hideTabBar()
 		}
 	};
 </script>
 
 <style lang="scss" scoped>
 	.wrap {
-		height:100%;
+		height: 100%;
 		display: flex;
 		flex-direction: column;
 		font-size: 28rpx;
+
+		.status_bar {
+			height: var(--status-bar-height);
+			width: 100%;
+		}
+
+		.title {
+			text-align: left;
+			font-size: 60rpx;
+			font-weight: 500;
+			margin-bottom: 70rpx;
+			padding: 20rpx 40rpx;
+		}
 
 		.content {
 			width: 600rpx;
 			margin: 80rpx auto 0;
 			flex: 1;
-
-			.title {
-				text-align: left;
-				font-size: 60rpx;
-				font-weight: 500;
-				margin-bottom: 100rpx;
-			}
 
 			input {
 				text-align: left;
@@ -199,29 +198,14 @@
 			}
 		}
 
-		.buttom {
-			.loginType {
-				display: flex;
-				padding: 350rpx 150rpx 150rpx 150rpx;
-				justify-content: space-between;
+		.agreement {
+			height: 100rpx;
+			padding: 20rpx 40rpx;
+			font-size: 20rpx;
+			color: $u-tips-color;
 
-				.item {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					color: $u-content-color;
-					font-size: 28rpx;
-				}
-			}
-
-			.hint {
-				padding: 20rpx 40rpx;
-				font-size: 20rpx;
-				color: $u-tips-color;
-
-				.link {
-					color: $u-type-warning;
-				}
+			.link {
+				color: $u-type-warning;
 			}
 		}
 	}

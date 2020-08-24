@@ -1,0 +1,101 @@
+// 引入模块依赖
+const fs = require('fs');
+const path = require('path');
+const jwt = require('jsonwebtoken');
+// 创建 token 类
+// class Jwt {
+//     constructor(data) {
+//         this.data = data;
+//     }
+
+//     //生成token
+//     generateToken() {
+//         let data = this.data;
+//         let created = Math.floor(Date.now() / 1000);
+//         let cert = fs.readFileSync(path.join(__dirname, '../pem/private_key.pem'));//私钥 可以自己生成
+//         let token = jwt.sign({
+//             data,
+//             exp: created + 60 * 30,
+//         }, cert, {algorithm: 'RS256'});
+//         return token;
+//     }
+
+//     // 校验token
+//     verifyToken() {
+//         let token = this.data;
+//         let cert = fs.readFileSync(path.join(__dirname, '../pem/public_key.pem'));//公钥 可以自己生成
+//         let res;
+//         try {
+//             let result = jwt.verify(token, cert, {algorithms: ['RS256']}) || {};
+//             let {exp = 0} = result, current = Math.floor(Date.now() / 1000);
+//             if (current <= exp) {
+//                 res = result.data || {};
+//             }
+//         } catch (e) {
+//             res = 'err';
+//         }
+//         return res;
+//     }
+// }
+
+//生成token
+// function signToken() {
+//     let data = this.data;
+//     let created = Math.floor(Date.now() / 1000);
+//     let cert = fs.readFileSync(path.join(__dirname, '../pem/private_key.pem'));//私钥 可以自己生成
+//     let token = jwt.sign({
+//         data,
+//         exp: created + 60 * 30,
+//     }, cert, { algorithm: 'RS256' });
+//     return token;
+// }
+
+// // 校验token
+// function verifyToken() {
+//     let token = this.data;
+//     let cert = fs.readFileSync(path.join(__dirname, '../pem/public_key.pem'));//公钥 可以自己生成
+//     let res;
+//     try {
+//         let result = jwt.verify(token, cert, { algorithms: ['RS256'] }) || {};
+//         let { exp = 0 } = result, current = Math.floor(Date.now() / 1000);
+//         if (current <= exp) {
+//             res = result.data || {};
+//         }
+//     } catch (e) {
+//         res = 'err';
+//     }
+//     return res;
+// }
+//创建token
+function signToken(data) {
+    return jwt.sign(data, 'empty', {
+        expiresIn: 60 * 60 * 24 * 7
+    });
+}
+//验证token
+function verifyToken(token) {
+    return jwt.verify(token, 'empty', function (err, decoded) {
+        if (err) {
+            // console.log(err)
+            return false
+        } else {
+            // console.log(decoded)
+            return decoded
+        }
+    });
+}
+
+
+
+
+// let token = signToken({
+//     phone: "18021041066"
+// })
+// console.log(token)
+// setInterval(() => {
+//     verifyToken(token)
+// }, 1000)
+
+module.exports = {
+    signToken, verifyToken
+};

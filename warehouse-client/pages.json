@@ -4,6 +4,10 @@
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/index/index",
+			"style": {}
+		},
+		{
 			"path": "pages/login/index",
 			"style": {}
 		},
@@ -12,18 +16,41 @@
 			"style": {}
 		},
 		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
+			"path": "pages/home/index",
+			"style": {}
 		}
 
+		, {
+			"path": "pages/my/index",
+			"style": {}
+		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
-		"navigationStyle": "custom"
+		"navigationStyle": "custom",
+		"app-plus": {
+			"scrollIndicator": "none"
+		}
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#3cc51f",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"height": "0",
+		"list": [{
+			"pagePath": "pages/home/index",
+			"iconPath": "static/logo.png",
+			"selectedIconPath": "static/image/icon_component_HL.png",
+			"text": "组件"
+		}, {
+			"pagePath": "pages/my/index",
+			"iconPath": "static/logo.png",
+			"selectedIconPath": "static/image/icon_API_HL.png",
+			"text": "接口"
+		}]
 	}
 }

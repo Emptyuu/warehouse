@@ -1,5 +1,5 @@
 var express = require('express');
-const { UserRegister } = require('../api/userAPI');
+const { UserRegister, UserLogin,UserToken } = require('../api/userAPI');
 var router = express.Router();
 
 /* GET users listing. */
@@ -9,6 +9,10 @@ router.get('/', function (req, res, next) {
 router.post('/register', (req, res) => {
   UserRegister(req, res)
 })
-
+router.post('/login', (req, res) => {
+  UserLogin(req, res)
+})
+router.post('/verifyToken',(req,res)=>{
+  UserToken(req, res)
+})
 module.exports = router;
- 
