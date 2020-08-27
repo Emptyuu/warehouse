@@ -1,7 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
-			uni.hideTabBar() 
+			uni.hideTabBar()
 			console.log('App Launch')
 		},
 		onShow: function() {
@@ -16,7 +16,13 @@
 <style lang="scss">
 	/*每个页面公共css */
 	@import "uview-ui/index.scss";
-	page{
-		height: 100%	//全局高度百分百;
+	page {
+		height: 100%; //全局高度百分百;
+		width: 100%;
+		overflow: hidden;
+	}
+	.status_bar {
+		height: var(--status-bar-height);
+		width: 100%;
 	}
 </style>

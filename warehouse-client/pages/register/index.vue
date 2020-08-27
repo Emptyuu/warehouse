@@ -5,16 +5,19 @@
 		<view class="content">
 			<u-form :model="form" ref="uForm" label-width="130">
 				<u-form-item label="手机号" prop="phone">
-					<u-input v-model="form.phone" />
+					<u-input v-model="form.phone" placeholder="11位手机号" />
+				</u-form-item>
+				<u-form-item label="公司名称" prop="company">
+					<u-input v-model="form.company" placeholder="例:XXX有限公司" />
 				</u-form-item>
 				<u-form-item label="姓名" prop="username">
-					<u-input v-model="form.username" />
+					<u-input v-model="form.username" placeholder="真实姓名" />
 				</u-form-item>
 				<u-form-item label="密码" prop="password">
-					<u-input v-model="form.password" type="password" :password-icon="true" />
+					<u-input v-model="form.password" type="password" :password-icon="true" placeholder="登陆时的密码" />
 				</u-form-item>
 				<u-form-item label="确认密码" prop="repassword">
-					<u-input v-model="form.repassword" type="password" :password-icon="true" />
+					<u-input v-model="form.repassword" type="password" :password-icon="true" placeholder="再次输入密码" />
 				</u-form-item>
 			</u-form>
 			<view class="tips">请认真填写信息哦！</view>
@@ -29,6 +32,7 @@
 			<text class="link">Emptyuu用户协议、隐私政策，</text>
 			注:如果您注册为本软件用户则代表您同意本用户协议及隐私政策
 		</view>
+		<u-toast ref="uToast" />
 	</view>
 </template>
 
@@ -40,7 +44,8 @@
 					phone: '18021041067',
 					username: '汉朝强',
 					password: '18021041066',
-					repassword: '18021041066'
+					repassword: '18021041066',
+					company: '哈哈哈科技有限公司'
 				},
 				rules: {
 					phone: [{
@@ -66,6 +71,12 @@
 						min: 2,
 						max: 5,
 						message: '名字应在2-5位之间',
+						trigger: ['change', 'blur']
+					}],
+					company: [{
+						required: true,
+						min: 2,
+						message: '请填写公司名称',
 						trigger: ['change', 'blur']
 					}],
 					repassword: [{
@@ -106,13 +117,26 @@
 						this.$u.UserApi.Userregister({
 							username: this.form.username,
 							phone: this.form.phone,
-							password: this.form.password
+							password: this.form.password,
+							company: this.form.company
 						}).then(res => {
-							if (res.code == 200) {
-								this.goLogin()
-							}
-						}).catch(res => {
 							console.log(res)
+							if (res.code == 200) {
+								// this.goLogin()
+								this.$u.route({
+									type: "redirectTo",
+									url: 'pages/login/index',
+									params: {
+										flag: 2
+									}
+								})
+							}
+							if (res.code == 401) {
+								this.$refs.uToast.show({
+									title: '当前账户已被注册',
+									type: 'error'
+								})
+							}
 						})
 					} else {
 						console.log('验证失败');
@@ -120,13 +144,9 @@
 				});
 			},
 			goLogin() {
-				// console.log(this.$u.route)
 				this.$u.route({
 					type: "navigateBack",
-					url: 'pages/login/index',
-					params: {
-						flag: 2
-					}
+					url: 'pages/login/index'
 				})
 			}
 
@@ -148,11 +168,6 @@
 		flex-direction: column;
 		font-size: 28rpx;
 
-		.status_bar {
-			height: var(--status-bar-height);
-			width: 100%;
-		}
-
 		.title {
 			text-align: left;
 			font-size: 60rpx;
@@ -163,7 +178,7 @@
 
 		.content {
 			width: 600rpx;
-			margin: 80rpx auto 0;
+			margin: 0rpx auto 0;
 			flex: 1;
 
 			input {

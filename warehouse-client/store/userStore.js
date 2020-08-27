@@ -1,7 +1,8 @@
 const tabbar = {
 	namespaced: true,
 	state: {
-		token:""
+		token:"",
+		info:{}
 	},
 
 	mutations: {

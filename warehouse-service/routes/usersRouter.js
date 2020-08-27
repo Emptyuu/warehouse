@@ -1,5 +1,5 @@
 var express = require('express');
-const { UserRegister, UserLogin,UserToken } = require('../api/userAPI');
+const { UserRegister, UserLogin,UserToken , GetHomeInfo } = require('../api/userAPI');
 var router = express.Router();
 
 /* GET users listing. */
@@ -14,5 +14,8 @@ router.post('/login', (req, res) => {
 })
 router.post('/verifyToken',(req,res)=>{
   UserToken(req, res)
+})
+router.get('/gethomeinfo',(req,res)=>{
+  GetHomeInfo(req, res)
 })
 module.exports = router;

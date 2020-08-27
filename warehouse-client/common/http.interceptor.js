@@ -10,7 +10,6 @@ const install = (Vue, vm) => {
 		},
 	});
 	Vue.prototype.$u.http.interceptor.request = (config) => { //拦截请求
-		//获取token进行验证
 		const token = uni.getStorageSync('token');
 		if (token) {
 			config.header.token = token;

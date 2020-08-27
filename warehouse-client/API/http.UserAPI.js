@@ -6,9 +6,12 @@ const install = (Vue, vm) => {
 		// 登录验证
 		UserLogin: (params) => vm.$u.post('/users/login', params),
 		// 注册验证
-		Userregister: (params) => vm.$u.post('/users/login', params),
+		Userregister: (params) => vm.$u.post('/users/register', params),
 		// 联系人
-		GetContacts : (params) => vm.$u.post('/users/contacts',params)
+		GetContacts : (params) => vm.$u.post('/users/contacts',params),
+		// 获取首页基础信息
+		GetHomeInfo : (params) => vm.$u.get('/users/gethomeinfo',params)
+		
 	}
 
 

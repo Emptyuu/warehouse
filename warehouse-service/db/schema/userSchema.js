@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
+    company: {      //公司名称*
+        type: String,
+        require: true,
+    },
     state: {         //状态 0 可用 1 不可用
         require: true,
         type: Number,

@@ -1,11 +1,12 @@
 const { User } = require('../db/schema');
 const { signToken, verifyToken } = require('../utils/jwt');
+const e = require('express');
 const UserApi = {
     //用户注册
     UserRegister(req, res) {
-        const { username, password, phone } = req.body;
+        const { username, password, phone, company } = req.body;
         let flag = 1;
-        if (!(username && password && phone)) flag = 0
+        if (!(username && password && phone && company)) flag = 0
         if (!(phone.length == 11)) flag = 0
         switch (flag) {
             case 0:
@@ -15,11 +16,12 @@ const UserApi = {
                 })
                 break;
         }
-        console.log(phone)
+        // console.log(phone)
         User.create({
             username: username,
             phone: phone,
             password: password,
+            company:company
         }).then(() => {
             return res.json({
                 code: 200,
@@ -55,16 +57,38 @@ const UserApi = {
     // 验证token
     UserToken(req, res) {
         const { token } = req.body;
-        console.log(req.headers.token) 
+        console.log(req.headers.token)
         if (!verifyToken(token)) {
             return res.json({
                 code: 400,
                 msg: "令牌失效"
-            }) 
+            })
         } else {
             return res.json({
                 code: 200,
                 msg: "令牌验证成功"
+            })
+        }
+    },
+    GetHomeInfo(req, res) {
+        const token = req.headers.token;
+        const info = verifyToken(token)
+        console.log(info)
+        if (info) {
+            User.findOne({ phone:info.phone }).then(result => {
+                return res.json({
+                    code: 200,
+                    data: {
+                        phone:result.phone,
+                        company:result.company
+                    }
+                })
+            })
+            
+        } else {
+            return res.json({
+                code: 400,
+                msg: "令牌失效"
             })
         }
     }

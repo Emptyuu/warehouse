@@ -37,7 +37,6 @@
 			}).then(res => {
 				if (res[1]) {
 					let token = res[1].data
-					console.log(this.$u.api)
 					this.$u.UserApi.VerifyToken({
 						token
 					}).then(result => {
@@ -58,6 +57,13 @@
 								})
 								break;
 						}
+					},()=>{
+						this.$u.route({
+							url: 'pages/login/index',
+							params: {
+								flag: 4
+							}
+						})
 					})
 				} else {
 					this.$u.route({

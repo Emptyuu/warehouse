@@ -71,22 +71,15 @@
 							password: this.form.password
 						}).then(res => {
 							// 获取联系人
-							this.GetUserContacts()
 							// console.log(res)
 							switch (res.code) {
 								//	登录成功	存储token
 								case 200:
+									this.GetUserContacts()
 									uni.setStorage({
 										key: 'token',
 										data: res.token,
 									}).then(() => {
-										// this.$u.route({
-										// 	type: "reLaunch",
-										// 	url: 'pages/home/index',
-										// })
-										// uni.switchTab({
-										// 	url: '/pages/home/index'
-										// });
 										this.$u.route({
 											type: "tab",
 											url: 'pages/home/index',
@@ -174,23 +167,34 @@
 		},
 		onLoad(option) {
 			uni.hideTabBar();
-			switch (Number(option.flag)) {
-				case 1:
-					uni.showToast({
-						title: "令牌失效，请重新登录"
-					})
-					break;
-				case 2:
-					uni.showToast({
-						title: "注册成功"
-					})
-					break;
-				case 3:
-					uni.showToast({
-						title: "成功退出登录"
-					})
-					break;
-			}
+			this.$nextTick(() => {
+				switch (Number(option.flag)) {
+					case 1: 
+						this.$refs.uToast.show({
+							title: '令牌失效，请重新登录',
+							type: 'error'
+						})
+						break;
+					case 2:
+						this.$refs.uToast.show({
+							title: '注册成功，请登录账号',
+							type: 'success'
+						})
+						break;
+					case 3:
+						this.$refs.uToast.show({
+							title: '成功退出登录',
+							type: 'success'
+						})
+						break;
+					case 4:
+						this.$refs.uToast.show({
+							title: '网络链接失败,请链接网络',
+							type: 'error'
+						})
+						break;
+				}
+			})
 
 		}
 	}

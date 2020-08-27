@@ -77,7 +77,7 @@
 					type: "redirectTo",
 					url: 'pages/login/index',
 					params: {
-						flag: 3
+						flag: 3,
 					}
 				}) 
 				try {
